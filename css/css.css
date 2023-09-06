@@ -1,0 +1,194 @@
+@charset "EUC-KR";
+/* 배경, 폰트색 티 안나는 회색으로 */
+html, body
+{
+	width: 100%;
+	height: 100%;
+    background-color: #F8F9FA; /* 배경색 */
+	/*
+	background-color: #F1F3F5;
+	*/
+	color: #495057; /* 폰트색 */
+	margin: 0;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+/* 제목 */
+h2
+{
+    color: #343A40;
+    font-size: 20pt;
+    margin: 20px 0 30px 0;
+}
+/* 링크 밑줄, 색 없앰 */
+a
+{
+	text-decoration-line: none;
+	cursor: pointer;
+	color: #495057;
+}
+/* 구분선 */
+hr
+{
+    margin: 5px;
+}
+/* index 우상단 셀렉트 박스 크기, 여백 */
+select
+{
+    padding: 5px;
+    margin: 5px;
+    border: 1px solid #C4C4C4;
+    border-radius: 5px;
+    background-color: #F8F9FA;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    color: #495057;
+}
+
+select:focus
+{
+    outline: 1px solid #868E96;
+}
+
+option
+{
+    background-color: #F8F9FA;
+    color: #495057;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 11pt;
+}
+/* 우상단 고정 */
+#wordcloud
+{
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+}
+#wordcloud:hover
+{
+    transform: scale(1.5);
+    transform-origin: 100% 0%;
+}
+#rightTop
+{
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+}
+/* 버튼 우하단 고정 */
+#btns
+{
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+}
+/* 버튼 마우스 올리면 색 변경 */
+circle:hover
+{
+    fill: #5F5F5F;
+    cursor: pointer;
+}
+/* 이미지 테두리 둥글게, 테두리 구분선 */
+img
+{
+    border-radius: 5px;
+    outline: solid 1px #868E96;
+}
+/* 음식 배경 색, 테두리 둥글게, 내부 여백 */
+.foodBg
+{
+    background-color: #F8F9FA;
+    border-radius: 10px;
+    padding: 20px 0px 20px 0px;
+    transition-property: background-color;
+    transition-duration: 0.3s; /* 마우스 나가고 색 변하는 시간 */
+    transition-timing-function: ease;
+    cursor: pointer;
+    /*
+    transition: 0.3s;
+    border: solid 1px #CED4DA;
+    */
+}
+/* 음식 배경 마우스 올리면 색 변경 */
+.foodBg:hover
+{
+    transition-property: background-color;
+    transition-duration: 0.5s; /* 마우스 올리면 색 변하는 시간 */
+    transition-timing-function: ease;
+    background-color: #CED4DA;
+    /*
+    color: #343A40;
+    transition: 0.3s;
+    */
+}
+/* 음식 이름 굵기, 여백 */
+.foodname
+{
+    margin-top: 10px; /* 음식 사진과 간격 */
+    font-size: 14pt;
+    font-weight: 600;
+}
+
+/* 로딩 화면 */
+
+.loadingBox
+{
+    /* 화면 전부 채우기 */
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #F8F9FA;
+    position: absolute;
+}
+.loading
+{
+    /* loadingBox 가운데로 */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    position: absolute;
+}
+.loading span /* 로딩 화면에 나오는 원 */
+{
+    display: inline-block; /* 로딩 화면 원 3개를 한줄로 세우기 */
+    width: 25px;
+    height: 25px;
+    background-color: gray;
+    border-radius: 50%;    /* span을 동그랗게 */
+    margin: 0px 10px 0px 10px; /* 원 간격 */
+    animation: loading 1s 0s linear infinite;
+    /* 이벤트명  반복시간  딜레이시간  이벤트처리부드럽게  이벤트무한반복*/
+}
+.loading span:nth-child(1) /* 로딩 첫번째 원 */
+{  
+    animation-delay: 0s;
+    background-color: red;
+}
+.loading span:nth-child(2) /* 로딩 두번째 원 */
+{
+    animation-delay: 0.2s;
+    background-color: orange;
+}
+.loading span:nth-child(3) /* 로딩 세번째 원 */
+{
+    animation-delay: 0.4s;
+    background-color: yellowgreen;
+}
+@keyframes loading /* 로딩 애니메이션 설정 */
+{        
+    0% /* 0, 50, 100은 구간*/
+    {
+        opacity: 0;            /* 안보였다가 */
+        transform: scale(0.5); /* transform의 scale로 요소를 확대 또는 축소할 수 있음 */   
+    }
+    50%
+    {
+        opacity: 1;            /* 보였다가 */
+        transform: scale(1.2); /* 1.2배 */
+    }
+    100%
+    {
+        opacity: 0;            /* 안보였다가 */
+        transform: scale(0.5); /* transform의 scale로 요소를 확대 또는 축소할 수 있음 */   
+    }
+}

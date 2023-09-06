@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="EUC-KR">
+		<title>Insert title here</title>
+		<script src="{{ url_for('static', filename='js/jquery-3.7.0.js') }}"></script>
+		<link rel="stylesheet" href=" {{ url_for('static', filename='css/css.css') }}">
+		<link rel="icon" href="data:,">
+		<!-- 구글 웹폰트 시작 -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400&display=swap" rel="stylesheet">
+        <!-- 구글 웹폰트 끝 -->
+	</head>
+	<body>
+		<script>
+    		$(document).ready(function(){
+    		});
+    		
+    		window.onload = function()
+    		{
+          		// 로딩 화면 없어짐 ===================================
+          		$(".loadingBox").fadeOut();
+          		$(".content").fadeIn();
+          		window.scrollTo({ top: 0, behavior: "smooth" });
+          		
+          		// 음식 목록 갱신 =============================================
+          		//alert( "weather : " + "{{ weather }}" + "\n" + "foodnum : " + {{ foodnum }} );
+        		foodSelect(); // 선택 음식
+        		foodRecommend(); // 추천 음식
+        		//alert("{{ foodRec }}")
+        		foodWeather(); // 날씨 음식
+        		
+        		// 페이지 최상단 이동 ========================================
+                $("#toTop").click(function(){
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                    //alert("click");
+                });
+                
+                // 첫 페이지 이동 =============================================
+                $("#toIndex").click(function(){
+              		window.scrollTo({ top: 0, behavior: "smooth" });
+              		$(".loadingBox").fadeIn();
+              		$(".content").fadeOut();
+                    location.href = "/";
+                });  
+                
+
+    		}
+      		
+      		// JSON 파싱 ==================================================
+      		function JsonParsing(data)
+      		{
+          		data = data.replaceAll('&#39;','"');
+          		data = data.replaceAll('&#34;','"');
+          		data = JSON.parse(data);
+          		
+          		return data;
+      		}
+      		
+      		// 선택한 음식 정보 가져옴 ========================================
+      		function foodSelect()
+      		{
+          		foodSelect = JsonParsing("{{ foodSelect }}");
+          		//alert( foodSelect.foodname );
+          		//console.log( foodSelect );
+          		//$("#test").html(foodSelect.foodname);
+          		$("#selectName").html(foodSelect.foodname);
+          		$("#selectKcal").html(foodSelect.kcal);
+          		$("#selectProtein").html(foodSelect.protein);
+          		$("#selectImage").attr("src", "/static/images/" + foodSelect.foodname + ".jpg");
+      		}
+      		
+      		// table에 데이터 넣기 ========================================
+      		function foodTable(title, data, tableId)
+      		{
+				count = 0;
+				outHtml  = "";
+				outHtml += '<tr>';
+				outHtml += '    <td colspan="5">';
+				outHtml += '        <h2>' + title + '</h2>';
+				outHtml += '        <hr style="margin-top:10px;"><!-- 구분선 --></hr>';
+				outHtml += '    </td>';
+				outHtml += '</tr>';
+				$.each(data,function(index,item){
+				    foodLink = "/result/" + "{{ weather }}" + "/" + data[index].foodnum;
+        			if(count == 0 || count % 5 == 0)
+    				{
+                        outHtml += '<tr>';        					
+    				}
+                    outHtml += '<td>';
+                    outHtml += '    <div class="foodBg" onclick="toResult('+ "'" + foodLink + "'" + ')">';
+                	outHtml += '        <img src="/static/images/' + data[index].foodname + '.jpg" style="width:200px;height:200px"><br>';
+                    outHtml += '        <div class="foodname">' + data[index].foodname + '</div><br>';
+                    outHtml += '        칼로리 : ' + data[index].kcal + ' kcal<br>';
+                    outHtml += '        단백질 : ' + data[index].protein + ' g<br>';
+                    outHtml += '        언급 횟수 : ' + data[index].word_count + ' 회<br>';
+                    outHtml += '    </div>';
+                    outHtml += '</td>';
+                    count++;
+                    if(count % 5 == 0)
+                    {
+                        outHtml +='</tr>';
+                    }	
+				});
+				outHtml += '<tr>';
+				outHtml += '    <td colspan="5"><hr><!-- 구분선 --></hr></td>';
+				outHtml += '</tr>';
+				$(tableId).html(outHtml); 
+      		}
+      		
+      		// 추천 음식 목록 처리 =============================================
+      		function foodRecommend()
+      		{
+          		foodRec = JsonParsing("{{ foodRec }}");
+          		console.log( foodRec );
+          		
+				foodTable("선택한 음식과 유사한 음식들", foodRec, "#foodRec");
+      		}
+      		
+      		// 날씨에 해당하는 음식 =============================================
+      		function foodWeather()
+      		{
+          		foodWtr = JsonParsing("{{ foodWeather }}");
+          		//console.log( foodWtr );  		
+				
+				weather = "{{ weather }}";
+				
+				if(weather == "hot")      weather = "더운 날";
+				if(weather == "cold")     weather = "추운 날";
+				if(weather == "normal")   weather = "평온한 날";
+				if(weather == "snow")     weather = "눈 오는 날";
+				if(weather == "rain")     weather = "비 오는 날";
+				if(weather == "rainsnow") weather = "비/눈 오는 날";				
+				
+				foodTable(weather + "에 추천하는 음식들", foodWtr, "#foodWeather");	
+      		}
+      		
+      		// 음식 클릭 했을때 로딩 ==============================
+        	function toResult(foodLink)
+        	{
+        	    //alert(foodLink);
+        	    window.scrollTo({ top: 0, behavior: "smooth" });
+        	    $(".content").fadeOut();
+                $(".loadingBox").fadeIn();
+                location.href = foodLink;
+        	}
+		</script>
+  		<!-- 로딩 화면 시작 -->
+  		<div class="loadingBox">
+      		<div class="loading">
+          		<span></span>
+          		<span></span>
+          		<span></span>
+      		</div>
+  		</div>
+  		<!-- 로딩 화면 끝 -->
+  		
+  		<!-- 본문 시작 -->
+  		<div class="content">
+      		<div style="margin-bottom:5px;"><!-- 페이지 상단 여백 --></div>
+    		
+    		<!-- 추천 음식 목록 시작 -->
+    		<table align="center" id="foodRec" style="width:1200px;text-align:center"></table>
+    		<!-- 추천 음식 목록 끝 -->
+    		
+    		<!-- 날씨 음식 목록 시작 -->
+    		<table align="center" id="foodWeather" style="width:1200px;text-align:center"></table>
+    		<!-- 날씨 음식 목록 끝 -->
+    		
+    		<!-- 선택한 음식 정보 시작 -->
+    		<div id="rightTop">
+                <table>
+                    <tr>
+                        <td><hr><!-- 구분선 --></hr></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center">
+                            <b style="font-size:16pt;">선택한 음식 정보</b><br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <img id="selectImage" src="" style="width:200px;height:200px">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center">
+                            <div id="selectName" style="margin-top: 10px;font-size:14pt;font-weight: 600;"></div><br>
+               				칼로리 : <span id="selectKcal"></span> kcal<br>
+               				단백질 : <span id="selectProtein"></span> g
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><hr><!-- 구분선 --></hr></td>
+                    </tr>
+                </table>
+            </div>
+    		<!-- 선택한 음식 정보 끝 -->
+    		
+    		<!-- 버튼 시작 -->
+    		<div id="btns">
+        		<!-- 이전 페이지 버튼 시작 -->
+            	<svg id="toIndex" viewBox="0 0 24 24" width="2.5rem" height="2.5rem" style="margin-right:1rem;">
+                    <circle fill="#A0A0A0" cx="12" cy="12" r="12"/>
+                    <path fill="#ffffffdd" style="transform: rotate(270deg);transform-origin: 48% 52%;" d="M12 10.828l-4.95 4.95-1.414-1.414L12 8l6.364 6.364-1.414 1.414z"/>
+                </svg>
+        		<!-- 이전 페이지 버튼 끝 -->
+        		
+        		<!-- 최상단 스크롤 버튼 시작 -->
+            	<svg id="toTop" viewBox="0 0 24 24" width="2.5rem" height="2.5rem">
+                    <circle fill="#A0A0A0" cx="12" cy="12" r="12"/>
+                    <path fill="#ffffffdd" d="M12 10.828l-4.95 4.95-1.414-1.414L12 8l6.364 6.364-1.414 1.414z"/>
+                </svg>
+        		<!-- 최상단 스크롤 버튼 끝 -->
+            </div>
+            <!-- 버튼 끝 -->
+            
+        </div>
+        <!-- 본문 끝 -->
+	</body>
+</html>
